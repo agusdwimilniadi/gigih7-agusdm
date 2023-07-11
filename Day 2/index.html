@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Halo</h1>
+    <script>
+      function printSong(songPromise) {
+        songPromise
+          .then((songs) => {
+            return songPromise;
+          })
+          .then((song2) => {
+            console.log(song2);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+      async function printWithAsync(songPromise) {
+        try {
+          const songs = await songPromise;
+          console.log(songs);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+
+      const songPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const songList = [
+            { title: 'Song 1', artists: [{ name: 'Artist 1' }], duration: 200 },
+            { title: 'Song 2', artists: [{ name: 'Artist 2' }], duration: 180 },
+            { title: 'Song 3', artists: [{ name: 'Artist 3' }], duration: 220 },
+          ];
+          resolve(songList);
+          //   reject('Gagal');
+        }, 2000);
+      });
+
+      //   printSong(songPromise);
+      printWithAsync(songPromise);
+    </script>
+  </body>
+</html>
