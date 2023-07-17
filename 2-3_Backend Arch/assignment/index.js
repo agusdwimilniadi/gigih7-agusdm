@@ -26,7 +26,7 @@ app.get('/playlist/:id', (req, res) => {
   }
 });
 
-app.get('/playlist/most/asc', (req, res) => {
+app.get('/playlist/most/sort', (req, res) => {
   const getMost = getMostPlayed();
   res.status(200).json(getMost);
 });
