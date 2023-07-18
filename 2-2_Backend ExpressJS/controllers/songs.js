@@ -3,7 +3,7 @@ const Format = require('response-format');
 
 let itemData = [
   {
-    title: 'Your Mama Wants Ya Back',
+    title: '  ',
     artist: 'Betty Davis',
     url: 'https://open.spotify.com/track/4sQtduG7VRBgJLTcJhvhsR',
     isPlaying: false,
