@@ -1,3 +1,9 @@
+use mymusicdb;
+
+db.createCollection("songs");
+db.createCollection("artist");
+db.createCollection("pupular");
+
 const songs = [
   {
     title: 'Bohemian Rhapsody',
