@@ -8,8 +8,17 @@ export const Sidebar = () => {
   return (
     <div className="w-[25%] h-screen overflow-hidden">
       <div className="flex my-5 flex-col bg-[#121212] p-4 mx-4 rounded  gap-5">
-        <SidebarItem isActive label={'Home'} icons={<GoHomeFill size={30} />} />
-        <SidebarItem label={'Search'} icons={<GoSearch size={30} />} />
+        <SidebarItem
+          to={'/'}
+          isActive
+          label={'Home'}
+          icons={<GoHomeFill size={30} />}
+        />
+        <SidebarItem
+          to={'/search'}
+          label={'Search'}
+          icons={<GoSearch size={30} />}
+        />
       </div>
       <div className="flex my-5 flex-col bg-[#121212] p-4 mx-4 rounded  gap-5">
         <SidebarItem

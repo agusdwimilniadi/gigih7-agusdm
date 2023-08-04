@@ -6,10 +6,10 @@ import {
 } from 'react-icons/md';
 import { BsPlayFill } from 'react-icons/bs';
 import { PlaylistTypeItem } from '../../Components/atoms/PlaylistTypeItem';
+import { SquarePlaylist } from '../../Components/atoms/SquarePlaylist';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Dropdown } from 'flowbite-react';
-import { SquarePlaylist } from '../../Components/atoms/SquarePlaylist';
 
 const CLIENT_ID = '5ea33907a5754562ac98af293f342b24';
 const REDIRECT_URI = 'http://localhost:5173/';
@@ -97,17 +97,37 @@ const DATA_PLAYLIST = [
 //   },
 // ];
 
-export const HomePage = () => {
-  const tokenLocal = window.localStorage.getItem('token');
+export const SearchPage = () => {
   const loginLink = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`;
   const [token, setToken] = useState('');
-  const [dataReccomended, setDataReccomended] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
   const logout = () => {
     setToken('');
     window.localStorage.removeItem('token');
   };
 
-  // USE EFFECT LOGIN
+  const handleChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get('https://api.spotify.com/v1/search', {
+        params: {
+          q: searchQuery,
+          type: 'track',
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setSearchResults(response.data.tracks.items);
+    } catch (error) {
+      console.error('Error searching for songs:', error);
+    }
+  };
   useEffect(() => {
     const hash = window.location.hash;
     let token = window.localStorage.getItem('token');
@@ -127,7 +147,6 @@ export const HomePage = () => {
     setToken(token);
   }, []);
   const [profileData, setProfileData] = useState({});
-  // GET PROFILE
   useEffect(() => {
     const token = window.localStorage.getItem('token');
     const getProfileData = async () => {
@@ -146,33 +165,6 @@ export const HomePage = () => {
 
     getProfileData();
   }, [token]);
-
-  // GET RECOMENDATION
-  useEffect(() => {
-    const getRecommendations = async () => {
-      try {
-        const response = await axios.get(
-          'https://api.spotify.com/v1/recommendations',
-          {
-            params: {
-              seed_tracks: '3AJwUDP919kvQ9QcozQPxg,6qZoQsBTQW2tix6KViDC7F,',
-              limit: 100,
-            },
-            headers: {
-              Authorization: `Bearer ${tokenLocal}`,
-            },
-          }
-        );
-
-        setDataReccomended(response.data.tracks);
-        console.log('Recoomend ', response.data.tracks);
-      } catch (error) {
-        console.error('Error getting recommendations:', error);
-      }
-    };
-
-    getRecommendations();
-  }, []);
   return (
     <>
       <div className="flex  ">
@@ -190,13 +182,13 @@ export const HomePage = () => {
                   {''}
                 </div>
                 <div className="flex items-center gap-3">
-                  <form>
+                  <form onSubmit={handleSearch}>
                     <input
                       placeholder="Cari"
                       className="text-black rounded-full"
                       type="text"
-                      // value={searchQuery}
-                      // onChange={handleChange}
+                      value={searchQuery}
+                      onChange={handleChange}
                     />
                     <button type="submit" className="bg-[#0E251B] p-2 rounded">
                       Cari
@@ -239,38 +231,22 @@ export const HomePage = () => {
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-semibold my-5">Good Evening</h1>
-            </div>
-            <div>
-              <div className="grid grid-cols-3 gap-3">
-                {DATA_PLAYLIST.map((item, index) => {
-                  return (
-                    <PlaylistTypeItem
-                      label={item.label}
-                      image={item.image}
-                      key={index}
-                      icon={<BsPlayFill size={30} />}
-                    />
-                  );
-                })}
-              </div>
+              <h1 className="text-3xl font-semibold my-5">Search Song</h1>
             </div>
           </div>
           <div className="py-3 px-5">
             <h1 className="text-xl font-bold">Jump Back In</h1>
-            <div className="grid grid-cols-5 gap-3 items-start">
-              {dataReccomended.length == 0 ? (
-                <div className="mt-10 text-center col-span-5">
-                  Please wait....
-                </div>
+            <div className="grid grid-cols-5 gap-3">
+              {searchResults.length == 0 ? (
+                <div className="mt-10 text-center col-span-5">No Songs</div>
               ) : (
-                dataReccomended.map((item) => {
+                searchResults.map((item, index) => {
                   return (
                     <SquarePlaylist
                       name={item.name}
                       image={item.album.images[0].url}
                       artist={item.artist}
-                      key={item}
+                      key={index}
                     />
                   );
                 })

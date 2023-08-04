@@ -1,10 +1,11 @@
 import { GoPlus } from 'react-icons/go';
 import { MdNavigateNext } from 'react-icons/md';
-
-export const SidebarItem = ({ label, icons, isActive, isLibrary }) => {
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+export const SidebarItem = ({ label, icons, isActive, isLibrary, to }) => {
   return (
-    <a
-      href="#"
+    <Link
+      to={to}
       className={`mx-5 ${
         isActive ? null : 'text-[#B3B3B3]'
       } hover:text-[#fff] transition-all`}
@@ -32,6 +33,13 @@ export const SidebarItem = ({ label, icons, isActive, isLibrary }) => {
           <p className="font-semibold text-xl">{label}</p>
         </div>
       )}
-    </a>
+    </Link>
   );
+};
+
+SidebarItem.propType = {
+  label: PropTypes.string,
+  icons: PropTypes.element,
+  isActive: PropTypes.bool,
+  isLibrary: PropTypes.bool,
 };
